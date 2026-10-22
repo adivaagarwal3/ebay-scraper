@@ -151,9 +151,15 @@ def find_shipping(item):
 
 
 def find_free_returns(item):
-    if first_text(item, RETURNS_SELECTORS) is not None:
+    text = first_text(item, RETURNS_SELECTORS)
+    if text is not None:
+        return 'free' in text.lower()
+    all_text = item.get_text(' ', strip=True).lower()
+    if 'free returns' in all_text:
         return True
-    return 'free returns' in item.get_text(' ', strip=True).lower()
+    if 'return' in all_text:
+        return False
+    return None
 
 
 def find_items_sold(item):
@@ -193,7 +199,7 @@ def extract_items(html):
     >>> items[0]
     {'name': 'Steel Trowel', 'price': 1195, 'status': 'Brand New', 'shipping': 0, 'free_returns': True, 'items_sold': 1024}
     >>> items[1]
-    {'name': 'Mystery Seeds', 'price': None, 'status': None, 'shipping': None, 'free_returns': False, 'items_sold': None}
+    {'name': 'Mystery Seeds', 'price': None, 'status': None, 'shipping': None, 'free_returns': None, 'items_sold': None}
     """
     soup = BeautifulSoup(html, 'html.parser')
 
